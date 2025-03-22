@@ -1,0 +1,5 @@
+RTT:
+  url: "rtt-waiting-times/"
+  patterns:
+    - "\\d{4}/$"       # Year pages
+    - "\\.zip$"        # Data files

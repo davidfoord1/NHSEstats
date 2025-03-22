@@ -11,7 +11,7 @@
 #' @keywords internal
 links_in_page <- function(url) {
   links <- url |>
-    rvest::read_html(url) |>
+    rvest::read_html() |>
     rvest::html_elements("a") |>
     rvest::html_attr("href") |>
     stats::na.omit()

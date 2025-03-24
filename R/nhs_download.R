@@ -15,14 +15,16 @@ nhs_download <- function(area, dest = ".", skip_existing = TRUE) {
 
   url <- paste0(default_url, area_config$url)
 
-  dl_urls <- links_by_regex(url, area_config$patterns)
-  file_names = basename(dl_urls)
-  dest_file = file.path(dest, file_names)
+  url_list <- links_by_regex(url, area_config$patterns)
+  flat_links <- flatten_nested_links(url_list)
+  metadata <- as.data.frame(do.call(rbind, flat_links))
 
-  meta <- data.frame(dl_urls,
-                     file_names,
-                     dest_file)
+  colnames(metadata) <- paste0("url_", seq_len(ncol(metadata)))
+  colnames(metadata)[ncol(metadata)] <- "dl_link"
 
-  meta
+  metadata$file_name <- basename(metadata$dl_link)
+  metadata$dest_name <- file.path(dest, metadata$file_name)
+
+  metadata
 }
 

@@ -77,23 +77,23 @@ links_by_regex <- function(urls, patterns, depth = 1L) {
 #'
 #' @keywords internal
 flatten_nested_links <- function(nested, path = character()) {
-  rows <- list()
-
   if (is.null(nested)) return(rows)
 
-  # Character vector instead of list to traverse
+  # Final level - a character vector
+  # Output ancestor path with each link string
   if (is.character(nested)) {
-    for (link in nested) {
-      rows[[length(rows) + 1]] <- c(path, link)
-    }
-
-    return(rows)
+    return(lapply(nested, \(link) c(path, link)))
   }
+
+  # Intermediate levels - list to traverse
+  rows <- list()
 
   for (i in seq_along(nested)) {
     name <- names(nested)[i]
     child <- nested[[i]]
+
     child_rows <- flatten_nested_links(child, c(path, name))
+
     rows <- c(rows, child_rows)
   }
 

@@ -10,7 +10,26 @@
 #'
 #' @export
 nhs_download <- function(area, dest = ".", skip_existing = TRUE) {
-  area_config <- load_yaml_config("areas.yaml")
+  area <- tolower(area)
+
+  if (!is.character(area) || length(area) != 1L) {
+    stop("`area` must be a single string.")
+  }
+
+  if (!is.character(dest) || length(dest) != 1L) {
+    stop("`dest` must be a single string.")
+  }
+
+  if (!is.logical(skip_existing) || length(skip_existing) != 1L) {
+    stop("`skip_existing` must be a single logical value.")
+  }
+
+  config <- load_yaml_config("areas.yaml")
+
+  if (!area %in% names(config)) {
+    stop("`area` not found in config file.")
+  }
+
   area_config <- area_config[[area]]
 
   url <- paste0(default_url, area_config$url)

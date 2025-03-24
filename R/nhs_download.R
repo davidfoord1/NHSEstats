@@ -44,6 +44,12 @@ nhs_download <- function(area, dest = ".", skip_existing = TRUE) {
   metadata$file_name <- basename(metadata$dl_link)
   metadata$dest_name <- file.path(dest, metadata$file_name)
 
+  if (!dir.exists(dest)) dir.create(dest, recursive = TRUE)
+
+  metadata$pre_existing <- vapply(metadata$dest_name,
+                                  file.exists,
+                                  logical(1))
+
   metadata
 }
 

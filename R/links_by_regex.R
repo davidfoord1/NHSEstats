@@ -73,7 +73,7 @@ links_by_regex <- function(urls, patterns, depth = 1L) {
 #'
 #' @return A list of character vectors, where each vector represents a row of
 #'   links from top-level pages down to a final download URL. The result can be
-#'   converted into a data.frame using [do.call(rbind, ...)].
+#'   converted into a data.frame using `do.call(rbind, ...)`.
 #'
 #' @keywords internal
 flatten_nested_links <- function(nested, path = character()) {

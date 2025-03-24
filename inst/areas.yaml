@@ -1,5 +1,11 @@
-RTT:
+rtt:
   url: "rtt-waiting-times/"
   patterns:
-    - "\\d{4}/$"       # Year pages
-    - "\\.zip$"        # Data files
+    - "rtt-data-\\d{4}-\\d{2}"      # Year pages
+    - "Full-CSV-data-file.*\\.zip$" # Data files
+
+ae-monthly:
+  url: "ae-waiting-times-and-activity"
+  patterns:
+    - "ae-attendances-and-emergency-admissions-\\d{4}-\\d{2}" # Year pages
+    - "\\.csv$" # Data files

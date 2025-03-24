@@ -51,3 +51,51 @@ links_by_regex <- function(urls, patterns, depth = 1L) {
 
   result
 }
+
+#' Flatten a nested list of URLs into rows of ancestry paths
+#'
+#' This internal function converts a recursively nested list of URLs — typically
+#' created by [links_by_regex()] — into a flat structure, where each row
+#' represents a full ancestry path from the root (e.g. landing page) to a final
+#' download link.
+#'
+#' The input list should reflect the structure of successive regex matches at
+#' each level of nesting, where intermediate list names correspond to matched
+#' page URLs, and final elements are character vectors of file URLs (e.g. ZIPs).
+#'
+#' @param nested A nested list of character vectors and/or lists, where each
+#'   level corresponds to a match from a recursive regex search. Typically the
+#'   output of [links_by_regex()].
+#'
+#' @param path A character vector representing the ancestry path taken to reach
+#'   the current level. Used internally during recursion and should not usually
+#'   be set by the user.
+#'
+#' @return A list of character vectors, where each vector represents a row of
+#'   links from top-level pages down to a final download URL. The result can be
+#'   converted into a data.frame using [do.call(rbind, ...)].
+#'
+#' @keywords internal
+flatten_nested_links <- function(nested, path = character()) {
+  rows <- list()
+
+  if (is.null(nested)) return(rows)
+
+  # Character vector instead of list to traverse
+  if (is.character(nested)) {
+    for (link in nested) {
+      rows[[length(rows) + 1]] <- c(path, link)
+    }
+
+    return(rows)
+  }
+
+  for (i in seq_along(nested)) {
+    name <- names(nested)[i]
+    child <- nested[[i]]
+    child_rows <- flatten_nested_links(child, c(path, name))
+    rows <- c(rows, child_rows)
+  }
+
+  rows
+}

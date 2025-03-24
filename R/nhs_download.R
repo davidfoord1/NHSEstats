@@ -1,12 +1,37 @@
 #' Download NHS England data for a specified statistical area
 #'
-#' @param area (chr) String name for statistical work area
-#' @param dest (chr) String file path for destination folder to download
-#' files to.
-#' @param skip_existing (lgl) Whether to avoid re-downloading a file if it's
-#' already in the `dest` folder, default `TRUE`.
+#' Downloads one or more files from NHS England's published statistics website
+#' for a given statistical work area (e.g., referral-to-treatment, A&E, diagnostics).
+#' This function uses a recursive pattern-matching approach to locate file links
+#' from area-specific web pages defined in a YAML configuration file.
 #'
-#' @return (data.frame) Download imformatio
+#' If `skip_existing` is `TRUE`, files already present in the destination
+#' directory will be skipped. A metadata data frame is returned summarising
+#' all discovered files and their download status.
+#'
+#' @param area Character string. The name of the statistical area to download,
+#'   matching an entry in the YAML config (e.g. `"rtt"`).
+#'
+#' @param dest Character string. Folder path where downloaded files will be saved.
+#'   Will be created if it does not exist.
+#'
+#' @param skip_existing Logical. Whether to avoid re-downloading files that
+#'   already exist in the `dest` folder. Defaults to `TRUE`.
+#'
+#' @return A data frame with one row per file, containing:
+#' \describe{
+#'   \item{dl_link}{The URL of the downloaded (or skipped) file}
+#'   \item{dest_name}{Relative path to downloaded file (best on `dest`).}
+#'   \item{file_name}{The filename portion of the download}
+#'   \item{pre_existing}{TRUE if the file already existed before download}
+#'   \item{success}{TRUE if the download succeeded; NA if skipped}
+#'   \item{time}{Download duration in seconds (NA if skipped)}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' nhs_download("rtt", dest = "data/RTT")
+#' }
 #'
 #' @export
 nhs_download <- function(area, dest = ".", skip_existing = TRUE) {

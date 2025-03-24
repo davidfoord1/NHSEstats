@@ -2,19 +2,41 @@
 % Please edit documentation in R/links_by_regex.R
 \name{links_by_regex}
 \alias{links_by_regex}
-\title{Nested search for links by regex pattern}
+\title{Recursively extract nested links using regex patterns}
 \usage{
-links_by_regex(base_url, patterns)
+links_by_regex(urls, patterns, depth = 1L)
 }
 \arguments{
-\item{base_url}{(chr) String url to search for patterns.}
+\item{urls}{Character vector of URLs to search. At the top level, this will
+typically be a single page URL; at deeper levels, it represents pages
+matched from a previous pattern.}
 
-\item{patterns}{(chr) Vector of regex patterns to search in nested pattern.}
+\item{patterns}{Character vector of regular expression patterns to apply.
+The function applies one pattern per recursion depth. The final pattern
+should match the actual downloadable files (e.g., ZIPs), and earlier
+patterns should match nested page URLs (e.g., year or month pages).}
+
+\item{depth}{Integer indicating the current recursion level (used internally).
+Users should not normally need to set this manually.}
 }
 \value{
-(chr) Vector of filtered link strings.
+A nested list structure:
+\itemize{
+\item At the last level, a character vector of matched file URLs.
+\item At intermediate levels, a named list where each name is a matched URL and
+each value is the result of the next recursive step.
+}
 }
 \description{
-Nested search for links by regex pattern
+Performs a recursive link search starting from one or more input URLs,
+applying a sequence of regular expression patterns to progressively filter
+and descend into nested web pages. Each pattern in the \code{patterns} vector
+corresponds to a depth level in the traversal.
+}
+\details{
+The last pattern is expected to be for download links, which are returned as
+a character vector of matching links. At higher levels, it returns a named
+list, where each name is a URL that matched at that depth, and each value is
+the result of the recursive search beneath it.
 }
 \keyword{internal}

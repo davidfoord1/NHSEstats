@@ -30,7 +30,7 @@ nhs_download <- function(area, dest = ".", skip_existing = TRUE) {
     stop("`area` not found in config file.")
   }
 
-  area_config <- area_config[[area]]
+  area_config <- config[[area]]
 
   url <- paste0(default_url, area_config$url)
 
